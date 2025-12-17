@@ -1,2 +1,2 @@
 flutter pub add dio
-flutter pub add shared_preference
+flutter pub add shared_preferences

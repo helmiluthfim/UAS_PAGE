@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:uas_crud/ui/beranda.dart';
-import 'package:uas_crud/ui/poli_page.dart';
+import '/helpers/user_info.dart';
+import '/ui/beranda.dart';
+import '/ui/login.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Klinik App',
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var token = await UserInfo().getToken();
+  print(token);
+  runApp(
+    MaterialApp(
+      title: "Klinik APP",
       debugShowCheckedModeBanner: false,
-      home: Beranda(),
-    );
-  }
+      home: token == null ? Login() : Beranda(),
+    ),
+  );
 }

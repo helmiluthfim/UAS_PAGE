@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import '../model/poli.dart';
-import '../service/poli_service.dart';
-import 'poli_detail.dart';
-import 'poli_form.dart';
-import 'poli_item.dart';
-import '../widget/sidebar.dart';
+import 'package:uas_crud/model/pasien.dart';
+import 'package:uas_crud/service/pasien_service.dart';
+import 'package:uas_crud/ui/pasien/pasien_form.dart';
+import 'package:uas_crud/ui/pasien/pasien_item.dart';
+import 'package:uas_crud/widget/sidebar.dart';
 
-class PoliPage extends StatefulWidget {
-  const PoliPage({Key? key}) : super(key: key);
-  _PoliPageState createState() => _PoliPageState();
+class PasienPage extends StatefulWidget {
+  const PasienPage({Key? key}) : super(key: key);
+  _PasienPageState createState() => _PasienPageState();
 }
 
-class _PoliPageState extends State<PoliPage> {
-  Stream<List<Poli>> getList() async* {
-    List<Poli> data = await PoliService().listData();
+class _PasienPageState extends State<PasienPage> {
+  Stream<List<Pasien>> getList() async* {
+    List<Pasien> data = await PasienService().listData();
     yield data;
   }
 
@@ -22,14 +21,14 @@ class _PoliPageState extends State<PoliPage> {
     return Scaffold(
       drawer: Sidebar(),
       appBar: AppBar(
-        title: const Text("Data Poli"),
+        title: const Text("Data Pasien"),
         actions: [
           GestureDetector(
             child: const Icon(Icons.add),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PoliForm()),
+                MaterialPageRoute(builder: (context) => PasienForm()),
               );
             },
           ),
@@ -52,7 +51,7 @@ class _PoliPageState extends State<PoliPage> {
           return ListView.builder(
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) {
-              return PoliItem(poli: snapshot.data[index]);
+              return PasienItem(pasien: snapshot.data[index]);
             },
           );
         },

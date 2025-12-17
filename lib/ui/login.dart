@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uas_crud/ui/beranda.dart';
+import 'package:uas_crud/service/login_service.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -66,9 +68,49 @@ class _LoginState extends State<Login> {
   }
 
   Widget _tombolLogin() {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: ElevatedButton(child: Text("Login"), onPressed: () {}),
+      child: ElevatedButton(
+        child: const Text("Login"),
+        onPressed: () async {
+          final username = _usernameCtrl.text.trim();
+          final password = _passwordCtrl.text.trim();
+
+          if (username.isEmpty || password.isEmpty) {
+            _showAlert("Username dan Password wajib diisi");
+            return;
+          }
+
+          final isLogin = await LoginService().login(username, password);
+
+          if (!mounted) return;
+
+          if (isLogin == true) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const Beranda()),
+            );
+          } else {
+            _showAlert("Username atau Password Tidak Valid");
+          }
+        },
+      ),
+    );
+  }
+
+  void _showAlert(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(message),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
     );
   }
 }
