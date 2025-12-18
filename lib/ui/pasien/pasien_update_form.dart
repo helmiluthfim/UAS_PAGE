@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:uas_crud/model/pasien.dart';
+import 'package:uas_crud/service/pasien_service.dart';
 import 'package:uas_crud/ui/pasien/pasien_detail.dart';
 
 class PasienUpdateForm extends StatefulWidget {
   final Pasien pasien;
 
   const PasienUpdateForm({Key? key, required this.pasien}) : super(key: key);
-
-  @override
-  _PegawaiUpdateFormState createState() => _PegawaiUpdateFormState();
+  _PasienUpdateFormState createState() => _PasienUpdateFormState();
 }
 
-class _PegawaiUpdateFormState extends State<PasienUpdateForm> {
+class _PasienUpdateFormState extends State<PasienUpdateForm> {
   final _formKey = GlobalKey<FormState>();
-
   final _noRmCtrl = TextEditingController();
   final _namaPasienCtrl = TextEditingController();
   final _tanggalLahirCtrl = TextEditingController();
   final _noTelpCtrl = TextEditingController();
   final _alamatCtrl = TextEditingController();
 
+  Future<Pasien> getData() async {
+    Pasien data = await PasienService().getById(widget.pasien.id.toString());
+    setState(() {
+      _namaPasienCtrl.text = data.nama_pasien;
+    });
+    return data;
+  }
+
   @override
   void initState() {
     super.initState();
-    _noRmCtrl.text = widget.pasien.nomor_rm;
-    _namaPasienCtrl.text = widget.pasien.nama_pasien;
-    _tanggalLahirCtrl.text = widget.pasien.tanggal_lahir;
-    _noTelpCtrl.text = widget.pasien.nomor_telpon;
-    _alamatCtrl.text = widget.pasien.alamat;
+    getData();
   }
 
   @override
@@ -74,25 +76,26 @@ class _PegawaiUpdateFormState extends State<PasienUpdateForm> {
     );
   }
 
-  Widget _tombolSimpan() {
+  _tombolSimpan() {
     return ElevatedButton(
-      onPressed: () {
-        if (_formKey.currentState!.validate()) {
-          Pasien pasien = Pasien(
-            nomor_rm: _noRmCtrl.text,
-            nama_pasien: _namaPasienCtrl.text,
-            tanggal_lahir: _tanggalLahirCtrl.text,
-            nomor_telpon: _noTelpCtrl.text,
-            alamat: _alamatCtrl.text,
-          );
-
+      onPressed: () async {
+        Pasien pasien = new Pasien(
+          nomor_rm: _noRmCtrl.text,
+          nama_pasien: _namaPasienCtrl.text,
+          tanggal_lahir: _tanggalLahirCtrl.text,
+          nomor_telpon: _noTelpCtrl.text,
+          alamat: _alamatCtrl.text,
+        );
+        String id = widget.pasien.id.toString();
+        await PasienService().ubah(pasien, id).then((value) {
+          Navigator.pop(context);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => PasienDetail(pasien: pasien),
+              builder: (context) => PasienDetail(pasien: value),
             ),
           );
-        }
+        });
       },
       child: const Text("Simpan Perubahan"),
     );
